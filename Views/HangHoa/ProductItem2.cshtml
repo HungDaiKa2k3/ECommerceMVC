@@ -1,0 +1,83 @@
+﻿@model X.PagedList.IPagedList<ECommerceMVC.ViewModels.HangHoaVM>
+
+
+<div class="col-12">
+    <div class="pagination d-flex justify-content-center mt-5">
+        <a href="#" class="rounded" onclick="loadPage(1); return false;" id="firstPage">&laquo;</a>
+        <a href="#" class="rounded" onclick="prevPage(); return false;" id="prevPage">&lsaquo;</a>
+
+        @for (var i = 1; i <= Model.PageCount; i++)
+        {
+            <a href="#" class="rounded @(Model.PageNumber == i ? "active" : "")" onclick="loadPage(@i); return false;" id="page_@i">@i</a>
+        }
+
+        <a href="#" class="rounded" onclick="nextPage(); return false;" id="nextPage">&rsaquo;</a>
+        <a href="#" class="rounded" onclick="loadPage(@Model.PageCount); return false;" id="lastPage">&raquo;</a>
+    </div>
+</div>
+
+@foreach (var item in Model)
+{
+    <div class="col-md-6 col-lg-6 col-xl-4">
+        <div class="rounded position-relative fruite-item">
+            <div class="fruite-img">
+                <a href="/HangHoa/Detail/@item.MaHang">
+                    <img src="/Hinh/HangHoa/@item.Hinh" class="img-fluid w-100 rounded-top" alt="">
+                </a>
+            </div>
+            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top: 10px; left: 10px;">@item.TenLoai</div>
+            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+                <h4>@item.TenHang</h4>
+                <p>@item.MoTa</p>
+                <div class="d-flex justify-content-between flex-lg-wrap">
+                    <p class="text-dark fs-5 fw-bold mb-0">@item.DonGia</p>
+                    <a href="/Cart/AddToCart/@item.MaHang" class="btn border border-secondary rounded-pill px-3 text-primary">
+                        <i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    var currentPage = @Model.PageNumber;
+    var totalPageCount = @Model.PageCount;
+
+    var loai = @TempData["loai"];
+
+    function loadPage(page) {
+        if (page < 1 || page > totalPageCount) return;
+        currentPage = page;
+
+        $.ajax({
+            url: '/HangHoa/SearchDM',
+            data: { page: page, loai: loai },
+            method: 'GET',
+            success: function (result) {
+                $('#search-results').html(result);
+                updatePaginationButtons();
+            },
+            error: function (xhr, status, error) {
+                alert("Có lỗi xảy ra: " + error);
+            }
+        });
+    }
+
+    function prevPage() {
+        loadPage(currentPage - 1);
+    }
+
+    function nextPage() {
+        loadPage(currentPage + 1);
+    }
+
+    function updatePaginationButtons() {
+
+        for (var i = 1; i <= totalPageCount; i++) {
+            $('#page_' + i).toggleClass('active', i === currentPage);
+        }
+    }
+
+    updatePaginationButtons();
+</script>

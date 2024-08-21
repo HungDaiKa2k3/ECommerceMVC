@@ -1,0 +1,14 @@
+﻿@model IEnumerable<ECommerceMVC.ViewModels.HangHoaVM>
+@{
+    ViewData["Title"] = "Search";
+    Layout = "~/Views/Shared/_DanhSachHH.cshtml";
+}
+
+<h1>Search</h1>
+<h6>Có @Model.Count() Sản phẩm</h6>
+
+@await Html.PartialAsync("ProductItem",Model)
+
+<div id="search-results" class="row">
+    <!-- Kết quả tìm kiếm sẽ được chèn vào đây -->
+</div>

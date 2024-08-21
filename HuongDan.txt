@@ -1,0 +1,79 @@
+﻿1, Tạo Layout
+->Tạo _Footer
+->Tạo _LayoutCustomer
+->Gắn _Footer vào _LayoutCustomer bằng: @await Html.PartialAsync("_Footer");
+
+2, Làm Menu
+->Tạo thư mục ViewComponents->MenuLoaiViewComponent.cs
+->Tạo thư mục ViewModels->MenuLoaiVM.cs
+->Tạo thư mục Components->MenuLoai(cùng tên với ViewComponents)->Default.cshtml để hiển thị
+->Gắn vào _DanhSachHH.cshtml(lấy layout _LayoutCustomer) bằng: @await Component.InvokeAsync("MenuLoai")
+
+3, Hiển thị danh sách sản phẩm
+->Tạo HangHoaVM.cs
+->Sửa action và view Index để hiển thị
+
+4, Tìm kiếm sản phẩm(trên menu)
+->Sửa action và view Search để hiển thị
+
+5, Tìm kiếm sản phẩm(trên header, ở LayoutCustomer)
+->Viết Jquery để tìm kiếm
+<script>
+        $(document).ready(function () {
+            $("#btnSearch").click(function () {
+                let url = '/HangHoa/Search?query=' + $("#searchText").val();
+                window.location.href = url;
+            })
+        })
+    </script>
+
+6, Xem chi tiết 1 sản phẩm
+->Tạo ProductItem.cshtml
+->Sửa view Index, Search:  @await Html.PartialAsync("ProductItem",Model)
+->Tạo Action Detail, PageNotFound(Ở HomeController)
+->Tạo View Detail
+->Thêm ViewModel ChiTietHangHoaVM
+->Sửa View Detail: Thêm danh mục(MenuLoai)
+->Tách tìm kiếm riêng
+
+7, New Product: Sử dung ComponentView 
+Nên dùng async:
+-Tác vụ I/O dài hạn (truy vấn cơ sở dữ liệu, gọi API, đọc/ghi file).
+-Xử lý nhiều yêu cầu đồng thời trong ứng dụng web.
+-Để giữ cho giao diện người dùng responsive trong ứng dụng desktop/mobile.
+
+Không nên dùng async:
+-Tác vụ CPU-bound (tính toán phức tạp).
+-Tác vụ thực hiện rất nhanh.
+-Khi async làm mã phức tạp hơn mà không mang lại lợi ích rõ ràng.
+
+8, Giỏ hàng
+-Thêm sevice
+-SessionExtension.cs
+-Tạo Cart controller
+-Sửa ProductList và Detail:<a asp-action="AddToCart" asp-controller="Cart" asp-route-id="@item.MaHang">
+-Tạo view Index
+
+9, Chi tiết giỏ hàng
+-Tạo CartViewComponent, CartVM, Cart ở Components
+
+10, Đăng ký
+-Tạo RegisterVM, KhachHangController, DangKyView
+-Tải pakage auto mapper
+-Thêm sevice
+-Tạo class AutoMapperProfile, Util(uploadHinh, ramdomKey), DataEncryptionExtensions
+
+11, Đăng nhập
+-Authentication
+
+12, Checkout
+-Tạo checkoutVM
+
+13, Tạo folder Sevices
+-ProductListSevice.cs
+-Sửa NewProductComponent
+
+14,Tạo thông báo chuyển hướng trang
+-Tạo MessageViewComponent, Message.cshtml
+-Sửa HangHoa/Index
+-Viết action OnPost
